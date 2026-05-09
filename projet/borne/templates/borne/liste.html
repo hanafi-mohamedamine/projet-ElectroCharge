@@ -1,0 +1,162 @@
+{% extends 'borne/base.html' %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- HEADER -->
+    <div class="text-center mb-5">
+        <h2 class="fw-bold display-6">
+            <i class="bi bi-ev-station text-primary"></i>
+             Liste des Bornes
+        </h2>
+        <p class="text-muted">Gérez et visualisez l'état de votre réseau de recharge</p>
+    </div>
+
+    <!-- 🔍 FILTRES -->
+    <form method="GET" class="card border-0 shadow-sm p-4 mb-5 rounded-4 bg-white">
+
+        <div class="row g-3">
+
+            <!-- STATUT -->
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-secondary">Statut</label>
+                <select name="statut" class="form-select">
+                    <option value="">Tous les statuts</option>
+                    <option value="libre">Libre</option>
+                    <option value="occupee">Occupée</option>
+                    <option value="maintenance">Maintenance</option>
+                </select>
+            </div>
+
+            <!-- PUISSANCE -->
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-secondary">Puissance</label>
+                <select name="puissance" class="form-select">
+                    <option value="">Toutes les puissances</option>
+                    {% for p in puissances %}
+                        <option value="{{ p }}">{{ p }} kW</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- VILLE -->
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-secondary">Ville</label>
+                <select name="ville" class="form-select">
+                    <option value="">Toutes les villes</option>
+                    {% for v in villes %}
+                        <option value="{{ v }}">{{ v }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- CONNECTEUR -->
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-secondary">Connecteur</label>
+                <select name="connecteur" class="form-select">
+                    <option value="">Tous les connecteurs</option>
+                    {% for c in connecteurs %}
+                        <option value="{{ c.id }}">{{ c.nom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- BUTTON -->
+            <div class="col-12 text-end mt-3">
+                <button class="btn btn-primary px-4 rounded-pill">
+                    <i class="bi bi-search me-2"></i> Filtrer
+                </button>
+            </div>
+
+        </div>
+    </form>
+
+    <!-- TABLE -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4 text-uppercase small fw-bold text-muted">Identifiant</th>
+                        <th class="text-uppercase small fw-bold text-muted">Emplacement</th>
+                        <th class="text-center text-uppercase small fw-bold text-muted">Puissance</th>
+                        <th class="text-uppercase small fw-bold text-muted">Statut</th>
+                        <th class="text-uppercase small fw-bold text-muted">Installation</th>
+                        <th class="pe-4 text-uppercase small fw-bold text-muted">Connecteur</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for b in bornes %}
+                    <tr>
+
+                        <td class="ps-4 fw-bold">{{ b.identifiant }}</td>
+
+                        <td>
+                            <i class="bi bi-geo-alt-fill text-danger me-2"></i>
+                            {{ b.emplacement }}
+                        </td>
+
+                        <td class="text-center">
+                            <span class="badge bg-primary-subtle text-primary border px-3 rounded-pill">
+                                {{ b.puissance_kw }} kW
+                            </span>
+                        </td>
+
+                        <td>
+                            {% if b.statut == 'libre' %}
+                                <span class="badge bg-success">Libre</span>
+                            {% elif b.statut == 'occupee' %}
+                              <span class="badge text-white" style="background-color: orange;">Occupée</span>
+                            {% else %}
+                                <span class="badge bg-danger">Maintenance</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="text-muted small">
+                            {{ b.date_installation|date:"d M Y" }}
+                        </td>
+
+                        <td class="pe-4">
+                            {{ b.connecteur.nom }}
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <i class="bi bi-search display-4 d-block mb-3"></i>
+                            Aucune borne trouvée
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+    body {
+        background-color: #f3f6f9;
+    }
+
+    .table tbody tr:hover {
+        background-color: rgba(13,110,253,0.03);
+        transition: 0.2s;
+    }
+
+    .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.15rem rgba(13,110,253,0.15);
+    }
+</style>
+
+{% endblock %}
