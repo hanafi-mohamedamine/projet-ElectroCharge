@@ -1,0 +1,118 @@
+{% extends 'borne/base.html' %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- HEADER -->
+    <div class="text-center mb-5">
+        <h2 class="fw-bold display-6">
+            <i class="bi bi-lightning-charge text-warning"></i>
+             Sessions de Charge
+        </h2>
+        <p class="text-muted">Historique détaillé de l'activité du réseau</p>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4 border-0 text-uppercase small fw-bold text-muted">Borne</th>
+                        <th class="border-0 text-uppercase small fw-bold text-muted">Date & Heure</th>
+                        <th class="border-0 text-uppercase small fw-bold text-muted text-center">Durée</th>
+                        <th class="pe-4 border-0 text-uppercase small fw-bold text-muted text-end">Énergie</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for s in sessions %}
+                    <tr class="border-bottom-light">
+
+                        <!-- BORNE -->
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-ev-station-fill text-primary"></i>
+                                <span class="fw-bold text-dark">
+                                    {{ s.borne.identifiant }}
+                                </span>
+                            </div>
+                        </td>
+
+                        <!-- DATE -->
+                        <td>
+                            <div class="d-flex flex-column">
+                                <span class="fw-semibold text-dark">
+                                    {{ s.date_debut|date:"d F Y" }}
+                                </span>
+                                <span class="small text-muted">
+                                    <i class="bi bi-clock me-1"></i>
+                                    {{ s.date_debut|date:"H:i" }}
+                                </span>
+                            </div>
+                        </td>
+
+                        <!-- DURÉE -->
+                        <td class="text-center">
+                            <span class="badge bg-light text-dark border px-3 rounded-pill">
+                                <i class="bi bi-hourglass-split me-1"></i>
+                                {{ s.duree_minutes }} min
+                            </span>
+                        </td>
+
+                        <!-- ÉNERGIE -->
+                        <td class="pe-4 text-end">
+                            <span class="fs-5 fw-bold text-primary">
+                                {{ s.energie_kwh }}
+                            </span>
+                            <small class="text-muted fw-bold"> kWh</small>
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-muted">
+                            <i class="bi bi-inbox display-4 d-block mb-3 opacity-50"></i>
+                            Aucune session enregistrée pour le moment.
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    body {
+        background-color: #f3f6f9;
+    }
+
+    .table thead th {
+        padding-top: 1.2rem;
+        padding-bottom: 1.2rem;
+        letter-spacing: 0.5px;
+    }
+
+    .table tbody td {
+        padding-top: 1.2rem;
+        padding-bottom: 1.2rem;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(13, 110, 253, 0.05);
+        transition: 0.2s;
+    }
+
+    .border-bottom-light {
+        border-bottom: 1px solid #f1f1f1;
+    }
+</style>
+
+{% endblock %}
